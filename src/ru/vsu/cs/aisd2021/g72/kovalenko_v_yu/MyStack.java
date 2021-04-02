@@ -1,7 +1,7 @@
 package ru.vsu.cs.aisd2021.g72.kovalenko_v_yu;
 
 public class MyStack<T> {
-    private class ListNode<T> {
+    private static class ListNode<T> {
         public T value;
         public ListNode<T> next;
 
@@ -33,6 +33,9 @@ public class MyStack<T> {
             throw new Exception("Stack is empty");
         }
         return head.value;
+    }
+    public boolean ifEmpty(){
+        return count == 0;
     }
 
 

@@ -1,20 +1,17 @@
 package ru.vsu.cs.aisd2021.g72.kovalenko_v_yu;
 
+import java.util.Scanner;
+
 public class Main {
 
     public static void main(String[] args) throws Exception {
 
-        MyStack<Queen> queens = new MyStack<>();
-        for(int i = 0; i < 8;i++) {
-            Logic.permutation(queens,i);
-            int j = 0;
-            while (j < 8 && queens.peek() != null) {
-                System.out.println(queens.peek().getX() + " " + queens.pop().getY());
-                j++;
-            }
-            System.out.println("-----------------------------------------");
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Введите количество ферзей и размерность доски:");
+        int n = scanner.nextInt();
 
-        }
+        Logic.print(n);
+
 
     }
 }
