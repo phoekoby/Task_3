@@ -1,72 +1,102 @@
 package ru.vsu.cs.aisd2021.g72.kovalenko_v_yu;
 
+import java.util.ArrayList;
+
 public class Logic {
-    private static boolean check(MyStack<Queen> queens, Queen cur, int count) throws Exception {
-        int counts = count;
+    private static int n;
+    private static MyStack<Queen> queens = new MyStack<>();
+    private static ArrayList<ArrayList<Queen>> all = new ArrayList<>();
+
+    public static ArrayList<ArrayList<Queen>> getAll() {
+        return all;
+    }
+
+    private static boolean check(MyStack<Queen> queens, Queen cur, int place) throws Exception {
+        if (place >= n) {
+            return false;
+        }
         MyStack<Queen> auxiliaryStack = new MyStack<>();
         boolean result = true;
-        while (counts != 0 && !queens.ifEmpty()) {
-
+        while (!queens.ifEmpty()) {
             auxiliaryStack.push(queens.pop());
             if (auxiliaryStack.peek().getY() == cur.getY()
                     || Math.abs(auxiliaryStack.peek().getX() - cur.getX()) == Math.abs(auxiliaryStack.peek().getY() - cur.getY())) {
                 result = false;
                 break;
             }
-            counts--;
         }
         while (!auxiliaryStack.ifEmpty()) {
             queens.push(auxiliaryStack.pop());
-            counts++;
         }
         if (result)
             queens.push(cur);
-        //   System.out.println(result);
         return result;
     }
 
-    public static void print(int n) throws Exception {
-        MyStack<Queen> queens = new MyStack<>();
+    public static void add(int n) throws Exception {
         MyStack<Queen> stack = new MyStack<>();
-        int term = 0;
-        while (permutation(queens, n)) {
-            System.out.println("Номер комбинации: " + ++term);
+        while (permutation(n)) {
+            all.add(new ArrayList<>());
             while (!queens.ifEmpty()) {
-                System.out.println(queens.peek().getX() + " " + queens.peek().getY());
+                all.get(all.size() - 1).add(queens.peek());
                 stack.push(queens.pop());
             }
             while (!stack.ifEmpty()) {
                 queens.push(stack.pop());
             }
-            System.out.println("-----------------------------------------");
-
         }
     }
 
-    public static boolean permutation(MyStack<Queen> queens, int count) throws Exception {
+    public static int[][] toArray(int n) throws Exception {
+        boolean last = true;
+        int[][] array = new int[n][n];
+        MyStack<Queen> stack = new MyStack<>();
 
+        while (!queens.ifEmpty()) {
+            Queen queen = queens.peek();
+            array[queen.getX()][queen.getY()] = 1;
+            stack.push(queens.pop());
+        }
+        while (!stack.ifEmpty()) {
+            queens.push(stack.pop());
+        }
+        return array;
+    }
+
+    public static int[][] toArray(int n, ArrayList<Queen> queens) throws Exception {
+        boolean last = true;
+        int[][] array = new int[n][n];
+
+        for (Queen queen : queens) {
+            array[queen.getX()][queen.getY()] = 1;
+        }
+        return array;
+    }
+
+
+    public static boolean permutation(int count) throws Exception {
+        Logic.n = count;
         int i;
         boolean can;
         Queen current;
+        can = false;
         if (queens.ifEmpty()) {
             i = 1;
-            can = false;
             queens.push(new Queen(0, 0));
             current = new Queen(i, 0);
         } else {
-            i = count - 1;
-            can = false;
-         /*   if (queens.peek().getX()==count-1 || queens.peek().getY() == count - 1) {
-                queens.pop();
-                i--;
-            }
-
-          */
+            i = n - 1;
             current = new Queen(i, queens.pop().getY() + 1);
         }
-
-        while (i < count) {
-            for (int j = current.getY(); j < count; j++) {
+        while (i < n) {
+/*
+         int j = current.getY();
+            while(!check(queens, current,i)  &&  j<n){
+                current.setY(j);
+                j++;
+            }
+ */
+            for (int j = current.getY(); j < n; j++) {
                 current.setY(j);
                 if (check(queens, current, i)) {
                     can = true;
@@ -74,7 +104,6 @@ public class Logic {
                 } else {
                     can = false;
                 }
-                //  System.out.println(j);
             }
             if (can) {
                 i++;
@@ -84,14 +113,17 @@ public class Logic {
                     return false;
                 }
                 current = queens.pop();
-                if (current.getY() == count - 1 && queens.ifEmpty()) {
-                    return false;
-                }
                 current.setY(current.getY() + 1);
                 i--;
             }
-
         }
         return true;
     }
+
+    public static void clear() throws Exception {
+        while (!queens.ifEmpty()) {
+            queens.pop();
+        }
+        all.clear();
     }
+}
