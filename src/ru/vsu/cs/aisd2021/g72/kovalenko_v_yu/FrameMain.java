@@ -23,10 +23,7 @@ public class FrameMain extends JFrame {
     private JPanel panel1;
     private JButton buttonNext;
 
-    private static final Color[] COLORS = {
-            Color.WHITE,
-            Color.BLACK
-    };
+
 
     private static final int DEFAULT_CELL_SIZE = 50;
     private int n;
@@ -120,10 +117,11 @@ public class FrameMain extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
+
                     term=0;
                     n = Integer.parseInt(textCount.getText());
                     Logic.clear();
-                    Logic.permutation(n);
+                    last = !Logic.permutation(n);
                     map = Logic.toArray(n);
                     numberOfPersuation.setText("Перестановка № " + ++term);
                     JTableUtils.writeArrayToJTable(gameTable, map);
@@ -138,7 +136,6 @@ public class FrameMain extends JFrame {
                 try {
                     last = !Logic.permutation(n);
                     if (!last) {
-
                         map = Logic.toArray(n);
                         numberOfPersuation.setText("Перестановка № " + ++term);
                         JTableUtils.writeArrayToJTable(gameTable, map);
