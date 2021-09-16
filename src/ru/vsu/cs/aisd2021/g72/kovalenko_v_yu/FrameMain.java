@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 
 public class FrameMain extends JFrame {
     private JTable gameTable;
@@ -22,7 +23,7 @@ public class FrameMain extends JFrame {
     private JLabel numberOfPersuation;
     private JPanel panel1;
     private JButton buttonNext;
-
+    private JButton buttonPrevious;
 
 
     private static final int DEFAULT_CELL_SIZE = 50;
@@ -30,6 +31,7 @@ public class FrameMain extends JFrame {
     private int[][] map = {{0}};
     private int term = 0;
     private boolean last = false;
+    private final ArrayList<ArrayList<Queen>> all = new ArrayList<>();
 
     public FrameMain() {
 
@@ -117,14 +119,17 @@ public class FrameMain extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-
-                    term=0;
-                    n = Integer.parseInt(textCount.getText());
-                    Logic.clear();
-                    last = !Logic.permutation(n);
-                    map = Logic.toArray(n);
-                    numberOfPersuation.setText("Перестановка № " + ++term);
-                    JTableUtils.writeArrayToJTable(gameTable, map);
+                    if (term == 0) {
+                        all.clear();
+                        term = 0;
+                        n = Integer.parseInt(textCount.getText());
+                        ArrayList<Queen> curCombination = new ArrayList<>();
+                        last = Logic.permutation(n);
+                        all.add(Logic.add(n, curCombination));
+                        map = Logic.toArray(n, all.get(term));
+                        numberOfPersuation.setText("Перестановка № " + ++term);
+                        JTableUtils.writeArrayToJTable(gameTable, map);
+                    }
                 } catch (Exception e) {
                     SwingUtils.showErrorMessageBox(e);
                 }
@@ -134,11 +139,19 @@ public class FrameMain extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    last = !Logic.permutation(n);
-                    if (!last) {
-                        map = Logic.toArray(n);
-                        numberOfPersuation.setText("Перестановка № " + ++term);
-                        JTableUtils.writeArrayToJTable(gameTable, map);
+                    if (last) {
+                        if (term >= all.size()) {
+                            ArrayList<Queen> curCombination = new ArrayList<>();
+                            last = Logic.permutation(n);
+                            all.add(Logic.add(n, curCombination));
+                        }
+                        map = Logic.toArray(n, all.get(term));
+                        if (last) {
+                            numberOfPersuation.setText("Перестановка № " + ++term);
+                            JTableUtils.writeArrayToJTable(gameTable, map);
+                        } else {
+                            numberOfPersuation.setText("Перестановки закончились");
+                        }
 
                     }
                 } catch (Exception e) {
@@ -146,5 +159,21 @@ public class FrameMain extends JFrame {
                 }
             }
         });
+        buttonPrevious.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    if(term>1) {
+                        last = true;
+                        map = Logic.toArray(n, all.get(term - 2));
+                        numberOfPersuation.setText("Перестановка № " + --term);
+                        JTableUtils.writeArrayToJTable(gameTable, map);
+                    }
+                } catch (Exception e) {
+                    SwingUtils.showErrorMessageBox(e);
+                }
+            }
+        });
+
     }
 }

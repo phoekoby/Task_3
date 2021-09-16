@@ -4,12 +4,14 @@ import java.util.ArrayList;
 
 public class Logic {
     private static int n;
-    private static MyStack<Queen> queens = new MyStack<>();
-    private static ArrayList<ArrayList<Queen>> all = new ArrayList<>();
+    private static final MyStack<Queen> queens = new MyStack<>();
+    //  private static ArrayList<ArrayList<Queen>> all = new ArrayList<>();
 
-    public static ArrayList<ArrayList<Queen>> getAll() {
+    /*public static ArrayList<ArrayList<Queen>> getAll() {
         return all;
     }
+
+     */
 
     private static boolean check(MyStack<Queen> queens, Queen cur, int place) throws Exception {
         if (place >= n) {
@@ -33,22 +35,20 @@ public class Logic {
         return result;
     }
 
-    public static void add(int n) throws Exception {
+    public static ArrayList<Queen> add(int n, ArrayList<Queen> combination) throws Exception {
         MyStack<Queen> stack = new MyStack<>();
-        while (permutation(n)) {
-            all.add(new ArrayList<>());
-            while (!queens.ifEmpty()) {
-                all.get(all.size() - 1).add(queens.peek());
-                stack.push(queens.pop());
-            }
-            while (!stack.ifEmpty()) {
-                queens.push(stack.pop());
-            }
+        while (!queens.ifEmpty()) {
+            Queen cur = new Queen(queens.peek().getX(),queens.peek().getY());
+            combination.add(cur);
+            stack.push(queens.pop());
         }
+        while (!stack.ifEmpty()) {
+            queens.push(stack.pop());
+        }
+        return combination;
     }
 
     public static int[][] toArray(int n) throws Exception {
-        boolean last = true;
         int[][] array = new int[n][n];
         MyStack<Queen> stack = new MyStack<>();
 
@@ -63,11 +63,11 @@ public class Logic {
         return array;
     }
 
-    public static int[][] toArray(int n, ArrayList<Queen> queens) throws Exception {
-        boolean last = true;
-        int[][] array = new int[n][n];
 
-        for (Queen queen : queens) {
+    public static int[][] toArray(int n, ArrayList<Queen> queensssss) throws Exception {
+        int[][] array = new int[n][n];
+        for (Queen queen : queensssss) {
+//            System.out.print(queen.getX() + " " + queen.getY());
             array[queen.getX()][queen.getY()] = 1;
         }
         return array;
@@ -120,10 +120,12 @@ public class Logic {
         return true;
     }
 
-    public static void clear() throws Exception {
+   /* public static void clear() throws Exception {
         while (!queens.ifEmpty()) {
             queens.pop();
         }
         all.clear();
     }
+
+    */
 }
